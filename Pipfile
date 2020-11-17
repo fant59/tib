@@ -1,0 +1,44 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Django = ">=3.0,<4.0"
+django-sekizai = "*"
+django-filter = "*"
+
+# Configuration via environment variables
+django-environ = "*"
+
+# WSGI Handler
+gunicorn = ">=20.0.0"
+
+# Postgress
+psycopg2 = "*"
+
+# Celery
+celery = '==4.3.0'
+django-celery-results = '==1.1.1'
+django_celery_beat = '==1.5.0'
+flower = '*'
+
+# Redis
+redis = '*'
+
+# Django REST Framework
+djangorestframework = "*"
+
+pytz = "*"
+python-dateutil ="*"
+
+tinvest ="*"
+
+pandas = "*"
+numpy = "*"
+requests = "*"
+mkdocs = "*"
+matplotlib = "*"
+
+[requires]
+python_version = "3.7"
