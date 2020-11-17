@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static sekizai_tags i18n admin_urls static admin_list %}
+
+{% block header %}
+	<nav class="navbar navbar-expand-lg navbar-light"
+			 style="background-color: #e3f2fd;">
+		<a class="navbar-brand" href="#">Stock analytic |</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+						data-target="#headerNavbar" aria-controls="headerNavbar"
+						aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="headerNavbar">
+			<ul class="navbar-nav">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarReports"
+						 role="button" data-toggle="dropdown" aria-haspopup="true"
+						 aria-expanded="false">
+						Reports
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarReports">
+						{% for report in reports %}
+							<a class="dropdown-item"
+								 href="{{ report.url }}">{{ report.name }}</a>
+						{% endfor %}
+					</div>
+				</li>
+			</ul>
+		</div>
+	</nav>
+
+{% endblock header %}
+
+{% block content %}
+
+	{% addtoblock "extra-meta" %}
+
+	{% endaddtoblock %}
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table table-bordered  table-condensed table-hover stock-list">
+					<thead>
+					<tr class="small">
+						<th style="width: 5%">ticker</th>
+						<th style="width: 15%">name</th>
+						<th style="width: 10%">figi</th>
+						<th style="width: 5%">cur.</th>
+						<th style="width: 10%">isin</th>
+						<th style="width: 5%">lot</th>
+						<th style="width: 5%">pr.inc.</th>
+						<th style="width: 35%">data</th>
+					</tr>
+					</thead>
+
+					<tbody>
+					{% for stock in object_list %}
+						<tr id="{{ stock.figi }}" class="small">
+							<td>{{ stock.ticker }}</td>
+							<td>{{ stock.name }}</td>
+							<td>{{ stock.figi }}</td>
+							<td>{{ stock.currency }}</td>
+							<td>{{ stock.isin }}</td>
+							<td>{{ stock.lot }}</td>
+							<td>{{ stock.min_price_increment }}</td>
+							<td class="item-table"></td>
+						</tr>
+						<tr data-id="{{ stock.figi }}" style="display: none">
+							<td colspan="8">
+								<div class="container-fluid">
+									<div class="row">
+										<div class="col-lg-12">
+											<canvas id="chart-{{ stock.figi }}"></canvas>
+										</div>
+									</div>
+								</div>
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	{% addtoblock "js" %}
+
+		<script type="text/javascript">
+      $(document).ready(function () {
+        $('.stock-list td').on('click', function (e) {
+          let tr = $(this).closest('tr')
+					let item_table = tr.find('.item-table')
+          let chart_row = $('[data-id=' + tr.attr('id') + ']')
+          if (!chart_row.hasClass('loaded')) {
+            $.get("{% url 'reports:report-base-chart-list' %}", {'figi': tr.attr('id')
+            }).done((response) => {
+              item_table.html(response.last)
+              var ctx = chart_row.find('#chart-' + tr.attr('id'))[0].getContext('2d')
+              var chart = new Chart(ctx, {
+                // The type of chart we want to create
+                type: 'line',
+                data: {
+                  labels: response.labels,
+                  datasets: response.datasets
+                },
+								options:{
+                  'responsive': true,
+                }
+              });
+              chart_row.addClass('loaded')
+            }).fail(() => {
+
+            })
+          }
+          chart_row.toggle()
+        });
+      });
+		</script>
+
+	{% endaddtoblock %}
+
+{% endblock content %}

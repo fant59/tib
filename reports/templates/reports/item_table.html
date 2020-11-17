@@ -1,0 +1,28 @@
+{% load static sekizai_tags i18n admin_urls static admin_list %}
+<table class="table table-condensed">
+	<thead>
+	<tr class="small" style="font-size: 0.8rem">
+		<th style="width: 20%">last period</th>
+		<th style="width: 20%">o</th>
+		<th style="width: 20%">c</th>
+		<th style="width: 20%">diff</th>
+		<th style="width: 20%">diff>=0</th>
+		<th style="width: 20%">diff<0</th>
+		<th style="width: 20%">cumsum</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	{% for item in last %}
+		<tr class="small">
+			<td>{{ item.period }}</td>
+			<td>{{ item.data.o }}</td>
+			<td>{{ item.data.c }}</td>
+			<td>{{ item.data.oc_diff }}</td>
+			<td>{{ item.data.oc_diff_up_zero }}</td>
+			<td>{{ item.data.oc_diff_down_zero }}</td>
+			<td>{{ item.data.oc_diff_cumsum }}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
