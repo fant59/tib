@@ -8,4 +8,5 @@ from core.core import SandBox
 def get_candles():
     api = SandBox(settings.TOKEN)
     api.init()
+    api.get_market_stocks()
     api.get_candles()

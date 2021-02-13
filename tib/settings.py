@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'sekizai',
+    'django_filters',
     'rest_framework',
 
 ]
@@ -45,6 +46,7 @@ PROJECT_APPS = [
     'reports',
     'reports.stocks',
     'reports.advice',
+    'portfolio',
 ]
 
 INSTALLED_APPS += PROJECT_APPS
@@ -108,20 +110,25 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+LANGUAGE_CODE = 'ru'
+TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
+# SESSION
+# -----------------------------------------------------------------------------
+# SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerialize'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 9 * 3600  # 9 hour
+AUTO_LOGOUT_DELAY = 9  # logout user after 9 hours
+# -----------------------------------------------------------------------------
+
+# LOGIN
+# -----------------------------------------------------------------------------
+LOGIN_URL = '/login/'
+LOGOUT_URL = '/logout/'
+LOGIN_REDIRECT_URL = '/'
 
 # STATIC AND MEDIA
 # -----------------------------------------------------------------------------

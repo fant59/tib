@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-Django = ">=3.0,<4.0"
+Django = ">=3.1,<4.0"
 django-sekizai = "*"
 django-filter = "*"
 
@@ -30,9 +30,9 @@ redis = '*'
 djangorestframework = "*"
 
 pytz = "*"
-python-dateutil ="*"
+python-dateutil = "*"
 
-tinvest ="*"
+tinvest = "*"
 
 pandas = "*"
 numpy = "*"
@@ -41,4 +41,4 @@ mkdocs = "*"
 matplotlib = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8.7"
