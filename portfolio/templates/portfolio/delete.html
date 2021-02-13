@@ -1,0 +1,11 @@
+{% load static sekizai_tags i18n static %}
+<form action="" method="POST">
+	{% csrf_token %}
+	<h4>Удалить объект?</h4>
+	<div class="mb-3">
+		<button type="submit" class="btn btn-primary btn-sm  float-end">{% translate 'Удалить' %}</button>
+	</div>
+</form>
+{% addtoblock "js" %}
+
+{% endaddtoblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static sekizai_tags %}
+
+{% block content %}
+	<div class="row mt-5">
+		<div class="col-md-4 col-lg-4 mx-auto">
+			<form class="form-signin text-center" method="post" action="{% url 'login-view' %}">
+				<h1 class="h3 mb-3 font-weight-normal">Пожалуйста, авторизуйтесь</h1>
+				{% csrf_token %}
+				<input type="hidden" name="next" value="{{ next }}"/>
+				{% if form.errors %}<div class="alert alert-danger" role="alert">Неверный логин или пароль</div>{% endif %}
+				<div class="card card-login card-plain px-1">
+					<div class="card-body ">
+						<div class="input-group no-border form-control-lg">
+							<span class="input-group-prepend">
+								<div class="input-group-text"><i class="fa fa-user"></i></div>
+							</span>
+							<input type="text" class="form-control form-control-sm" placeholder="Логин..."  required="" name="username"
+								{% if form.username.value %}value="{{ form.username.value }}"{% endif %}>
+						</div>
+						<div class="input-group no-border form-control-lg">
+							<div class="input-group-prepend">
+								<div class="input-group-text"><i class="fa fa-lock"></i></div>
+							</div>
+							<input type="password" class="form-control form-control-sm" placeholder="Пароль..." required="" name="password"
+								{% if form.password.value %}value="{{ form.password.value }}"{% endif %}>
+						</div>
+					</div>
+					<div class="card-footer bg-white">
+						<button class="btn btn-primary btn-round  btn-block mb-3" type="submit">Вход</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+{% endblock content %}

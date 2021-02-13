@@ -17,7 +17,10 @@ class DayCandleInlines(admin.TabularInline):
         'v',
         'time',
     ]
-    max_num = 50
+    list_per_page = 50
+    readonly_fields = fields
+    can_delete = False
+    list_select_related = ['stock', ]
 
 
 @register(Stock)
