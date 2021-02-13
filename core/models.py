@@ -2,12 +2,19 @@ from datetime import datetime
 from typing import Union
 
 from django.db import models
-from django.db.models import F, Value as V
-from tinvest import Currency
+from django.db.models import Max
 
 
-class CurrencyChoices(Currency, models.TextChoices):
-    pass
+class CurrencyChoices(models.TextChoices):
+    rub = 'RUB', 'RUB'
+    usd = 'USD', 'USD'
+    eur = 'EUR', 'EUR'
+    gbp = 'GBP', 'GBP'
+    hkd = 'HKD', 'HKD'
+    chf = 'CHF', 'CHF'
+    jpy = 'JPY', 'JPY'
+    cny = 'CNY', 'CNY'
+    try_ = 'TRY', 'TRY'
 
 
 class Stock(models.Model):
@@ -38,6 +45,10 @@ class Stock(models.Model):
     ticker = models.CharField(
         max_length=8,
     )
+    min_quantity = models.FloatField(
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         verbose_name = 'Stock'
@@ -45,15 +56,15 @@ class Stock(models.Model):
         ordering = ('ticker', )
 
     def __str__(self):
-        return f'{self.figi}:{self.ticker}'
+        return f'{self.ticker}:{self.name}'
 
 
 class DayCandleQuerySet(models.QuerySet):
     def get_last_date(self) -> Union[datetime, None]:
-        obj = self.first()
+        obj = self.aggregate(max_time=Max('time'))
         try:
-            return obj.time
-        except AttributeError:
+            return obj['max_time']
+        except (AttributeError, KeyError):
             return None
 
 
@@ -94,7 +105,7 @@ class DayCandle(models.Model):
     class Meta:
         verbose_name = 'Day candle'
         verbose_name_plural = 'Day candles'
-        ordering = ['stock', 'time']
+        ordering = ['stock', '-time']
 
     def __str__(self):
         return f'{self.stock}:{self.time.strftime("%d.%m.%Y")}'

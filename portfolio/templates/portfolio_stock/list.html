@@ -1,0 +1,76 @@
+{% load static sekizai_tags i18n admin_urls static admin_list %}
+<h3><button data-url="{% url 'portfolio:portfolio_stock_create' %}?portfolio_id={{ portfolio_id|urlencode }}" type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#form-modal-id">Добавить</button> <i class="far fa-list-alt"></i> Акции </h3>
+{% if portfolio_stocks|length > 0 %}
+	<table class="table table-sm">
+		<thead class="table-light">
+			<tr>
+				<th>Название</th>
+				<th>Направление</th>
+				<th>Комиссия</th>
+				<th>Валюта</th>
+				<th>Итог на {% now "d.m.Y" %}</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for portfolio_stock in portfolio_stocks %}
+			<tr>
+				<td>{{ portfolio_stock.stock.ticker }}</td>
+				<td>{{ portfolio_stock.direction }}</td>
+				<td>{{ portfolio_stock.fee }}</td>
+				<td>{{ portfolio_stock.stock.currency }}</td>
+				<td></td>
+				<td>
+					<button type="button" class="btn btn-sm btn-link me-2 float-end"
+									data-url="{% url 'portfolio:portfolio_stock_delete' pk=portfolio_stock.id %}"
+									data-bs-toggle="modal"
+									data-bs-target="#form-modal-id">
+						<i class="fas fa-trash"></i>
+					</button>
+					<button type="button" class="btn btn-sm btn-link me-2 float-end"
+									data-url="{% url 'portfolio:portfolio_stock_update' pk=portfolio_stock.id %}"
+									data-bs-toggle="modal"
+									data-bs-target="#form-modal-id">
+						<i class="fas fa-pencil-alt"></i>
+					</button>
+					<button type="button" class="btn btn-sm btn-link me-2 float-end"
+									data-bs-toggle="collapse"
+									data-bs-target="#portfolio-stock-line-{{ portfolio_stock.id }}-id"
+									aria-expanded="false"
+									aria-controls="portfolio-stock-line-{{ portfolio_stock.id }}-id">
+						<i class="fas fa-list-ul"></i></button>
+					<button type="button" class="btn btn-sm btn-link me-2 float-end"
+									data-url="{% url 'portfolio:portfolio_stock_line_create' %}?portfolio_stock_id={{ portfolio_stock.id|urlencode }}"
+									data-bs-toggle="modal"
+									data-bs-target="#form-modal-id">
+						<i class="fas fa-plus-circle"></i>
+					</button>
+				</td>
+			</tr>
+			<tr id="portfolio-stock-line-{{ portfolio_stock.id }}-id" class="collapse"
+					data-type="portfolio-stock-line"
+					data-url="{% url 'portfolio:portfolio_stock_line_list' %}?portfolio_stock_id={{ portfolio_stock.id|urlencode }}" style="font-size: 0.8rem">
+				<td></td>
+				<td data-type="lines" colspan="5"></td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% else %}
+	<p class="small text-muted">Список акций пуст...</p>
+{% endif %}
+
+
+	{% addtoblock "js" %}
+		<script>
+			$( document ).ready(function(e) {
+				$('[data-type="portfolio-stock-line"]').on('show.bs.collapse', function (e) {
+					var tag = $(this);
+					$.get(tag.data('url')).done((response) => {
+					  tag.find('[data-type="lines"]').html(response)
+					}).fail(() => {
+					});
+				});
+			});
+		</script>
+	{% endaddtoblock %}
